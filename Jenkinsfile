@@ -31,7 +31,6 @@ def label = "ImageBuildPod-${UUID.randomUUID().toString()}"
 
 podTemplate(
     label: label,
-    volumes: [hostPathVolume(name: 'dockersock', hostPath: '/var/run/docker.sock')],
     containers: [
         containerTemplate(name: 'maven',
             image: 'maven:3.6.3-jdk-8',
@@ -42,9 +41,9 @@ podTemplate(
             ttyEnabled: true,
             command: 'cat',
             envVars: [containerEnvVar(key: 'DOCKER_HOST', value: "unix:///var/run/docker.sock")],
-            volumeMounts: [name: 'dockersock', mountPath: '/var/run/docker.sock'],
             privileged: true)
-    ])
+    ],
+    volumes: [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ])
 {
     node(label) {
         stage('Build') {
