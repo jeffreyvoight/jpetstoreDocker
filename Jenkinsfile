@@ -42,7 +42,7 @@ podTemplate(
             ttyEnabled: true,
             command: 'cat',
             envVars: [containerEnvVar(key: 'DOCKER_HOST', value: "unix:///var/run/docker.sock")],
-            volumeMounts: [name: 'dockersock', mountPath: '/var/run/docker.sock']
+            volumeMounts: [name: 'dockersock', mountPath: '/var/run/docker.sock'],
             privileged: true)
     ])
 {
