@@ -10,7 +10,10 @@ podTemplate(
         containerTemplate(name: 'docker',
             image: 'docker:latest',
             ttyEnabled: true,
-            command: 'cat')
+            command: 'cat',
+            envVars: [containerEnvVar(key: 'DOCKER_HOST', value: "unix:///var/run/docker.sock")],
+            privileged: true
+)
         ]
 ) {
     node(label) {
