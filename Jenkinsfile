@@ -1,14 +1,20 @@
+def label = "ImageBuildPod-${UUID.randomUUID().toString()}"
+
 podTemplate(
-    label: 'maven',
+    label: label,
     containers: [
         containerTemplate(name: 'maven',
             image: 'maven:3.6.3-jdk-8',
             ttyEnabled: true,
+            command: 'cat'),
+        containerTemplate(name: 'docker',
+            image: 'docker:latest',
+            ttyEnabled: true,
             command: 'cat')
         ]
 ) {
-    node('maven') {
-        stage('Container') {
+    node(label) {
+        stage('Build') {
             container('maven') {
                 stage('Clone') {
                     checkout(
@@ -33,6 +39,10 @@ podTemplate(
                     sh('mvn verify -DskipITs')
                     archiveArtifacts artifacts: '**/target/*.war', onlyIfSuccessful: true
                 }
+            }
+        stage('Container'){
+            container('docker'){
+                sh('docker image build -t ice/jpetstore ./')
             }
         }
     }
