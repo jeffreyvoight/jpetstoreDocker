@@ -23,7 +23,7 @@ spec:
     stage('Build Docker image') {
       git 'https://github.com/jenkinsci/docker-jnlp-slave.git'
       container('docker') {
-        sh "docker build -t blah/blah docker-jnlp-slave/docker-inbound-agent/11/alpine/"
+        sh "docker build -t blah/blah 11/alpine/"
       }
     }
   }
