@@ -31,14 +31,14 @@ podTemplate(
                         ]
                     )
                 }
-                stage('Compile') {
-                    sh('mvn compile')
-                }
-                stage('Test') {
-                    sh('mvn test')
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                }
-                stage('Verify') {
+//                 stage('Compile') {
+//                     sh('mvn compile')
+//                 }
+//                 stage('Test') {
+//                     sh('mvn test')
+//                     junit '**/target/surefire-reports/TEST-*.xml'
+//                 }
+//                 stage('Verify') {
                     sh('mvn verify -DskipITs')
                     archiveArtifacts artifacts: '**/target/*.war', onlyIfSuccessful: true
                 }
@@ -46,7 +46,7 @@ podTemplate(
         }
         stage('Container'){
             container('docker'){
-            sh('ls -al /var/run/docker')
+            sh('ls -al /var/run/*')
                 sh('docker image build -t ice/jpetstore ./')
             }
         }
