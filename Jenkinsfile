@@ -40,6 +40,7 @@ podTemplate(
                     archiveArtifacts artifacts: '**/target/*.war', onlyIfSuccessful: true
                 }
             }
+        }
         stage('Container'){
             container('docker'){
                 sh('docker image build -t ice/jpetstore ./')
