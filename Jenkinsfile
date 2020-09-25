@@ -46,7 +46,6 @@ podTemplate(
         }
         stage('Container'){
             container('docker'){
-            sh('ls -al /var/run/*')
                 sh('docker image build -t ice/jpetstore ./')
             }
         }
