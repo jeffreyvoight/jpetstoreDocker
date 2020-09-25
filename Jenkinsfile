@@ -41,7 +41,7 @@ podTemplate(
 //                 stage('Verify') {
 //                     sh('mvn verify -DskipITs')
 //                     archiveArtifacts artifacts: '**/target/*.war', onlyIfSuccessful: true
-                }
+//                }
             }
         }
         stage('Container'){
