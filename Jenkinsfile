@@ -1,33 +1,4 @@
 def label = "ImageBuildPod-${UUID.randomUUID().toString()}"
-// podTemplate(yaml: """
-// apiVersion: v1
-// kind: Pod
-// spec:
-//   containers:
-//   - name: docker
-//     image: docker:1.11
-//     command: ['cat']
-//     tty: true
-//     volumeMounts:
-//     - name: dockersock
-//       mountPath: /var/run/docker.sock
-//   volumes:
-//   - name: dockersock
-//     hostPath:
-//       path: /var/run/docker.sock
-// """
-//   ) {
-//
-//   def image = "jenkins/jnlp-slave"
-//   node(POD_LABEL) {
-//     stage('Build Docker image') {
-//       git 'https://github.com/jenkinsci/docker-jnlp-slave.git'
-//       container('docker') {
-//         sh "docker build -t blah/blah 11/alpine/"
-//       }
-//     }
-//   }
-// }
 
 podTemplate(
     label: label,
@@ -60,17 +31,17 @@ podTemplate(
                         ]
                     )
                 }
-//                 stage('Compile') {
-//                     sh('mvn compile')
-//                 }
-//                 stage('Test') {
-//                     sh('mvn test')
-//                     junit '**/target/surefire-reports/TEST-*.xml'
-//                 }
-//                 stage('Verify') {
-//                     sh('mvn verify -DskipITs')
-//                     archiveArtifacts artifacts: '**/target/*.war', onlyIfSuccessful: true
-//                }
+                stage('Compile') {
+                    sh('mvn compile')
+                }
+                stage('Test') {
+                    sh('mvn test')
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                }
+                stage('Verify') {
+                    sh('mvn verify -DskipITs')
+                    archiveArtifacts artifacts: '**/target/*.war', onlyIfSuccessful: true
+               }
             }
         }
         stage('Container'){
