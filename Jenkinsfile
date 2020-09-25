@@ -39,8 +39,8 @@ podTemplate(
 //                     junit '**/target/surefire-reports/TEST-*.xml'
 //                 }
 //                 stage('Verify') {
-                    sh('mvn verify -DskipITs')
-                    archiveArtifacts artifacts: '**/target/*.war', onlyIfSuccessful: true
+//                     sh('mvn verify -DskipITs')
+//                     archiveArtifacts artifacts: '**/target/*.war', onlyIfSuccessful: true
                 }
             }
         }
