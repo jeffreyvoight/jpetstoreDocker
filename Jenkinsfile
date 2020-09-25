@@ -11,6 +11,9 @@ podTemplate(
             image: 'docker:latest',
             ttyEnabled: true,
             command: 'cat',
+            volumes: [
+                        hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
+                      ],
             envVars: [containerEnvVar(key: 'DOCKER_HOST', value: "unix:///var/run/docker.sock")],
             privileged: true
 )
