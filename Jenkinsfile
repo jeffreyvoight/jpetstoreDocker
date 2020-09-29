@@ -62,9 +62,9 @@ podTemplate(
                     echo('Logging in to container.dhsice.name')
                     sh('docker login -u ${USERNAME} -p ${USERPASS} container.dhsice.name')
                     echo('Building docker image');
-                    sh('docker build -t ice/jpetstore:latest ./')
+                    sh('docker build -t ${USERNAME}/container.dhsice.name/ice/jpetstore:latest ./')
                     echo('Pushing docker image')
-                    sh('docker push ice/jpetstore:latest')
+                    sh('docker push ${USERNAME}/container.dhsice.name/ice/jpetstore:latest')
                 }
             }
         }
