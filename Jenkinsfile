@@ -1,4 +1,4 @@
-def label = "ImageBuildPod-${UUID.randomUUID().toString()}"
+def label = "jpetstorePod-${UUID.randomUUID().toString()}"
 
 podTemplate(
     label: label,
@@ -6,18 +6,11 @@ podTemplate(
         containerTemplate(name: 'maven',
             image: 'maven:3.6.3-jdk-8',
             ttyEnabled: true,
-            command: 'cat'),
-        containerTemplate(name: 'docker',
-            image: 'docker:latest',
-            ttyEnabled: true,
-            command: 'cat',
-            envVars: [containerEnvVar(key: 'DOCKER_HOST', value: "unix:///var/run/docker.sock")],
-            privileged: true)
-    ],
-    volumes: [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ])
-{
+            command: 'cat')
+        ]
+) {
     node(label) {
-        stage('Build') {
+        stage('Container') {
             container('maven') {
                 stage('Clone') {
                     checkout(
@@ -31,27 +24,28 @@ podTemplate(
                         ]
                     )
                 }
-                stage('Compile') {
-                    sh('mvn compile')
-                }
-                stage ('SonarQube analysis') {
-                    withSonarQubeEnv('sonarqube') {
-                        sh 'mvn sonar:sonar'
+                configFileProvider([configFile(fileId: 'mavennexus', variable: 'MAVEN_CONFIG')]) {
+                    stage('Compile') {
+                        sh('mvn -s ${MAVEN_CONFIG} compile')
                     }
-                }
-                stage ('SonarQube quality gate') {
-                    timeout(time: 10, unit: 'MINUTES') {
-                        waitForQualityGate abortPipeline: true
+                    stage ('SonarQube analysis') {
+                        withSonarQubeEnv('sonarqube') {
+                            sh 'mvn -s ${MAVEN_CONFIG} sonar:sonar'
+                        }
                     }
-                }
-                stage('Test') {
-                    sh('mvn test')
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                }
-                stage('Verify') {
-                    sh('mvn verify -DskipITs')
+                    stage ('SonarQube quality gate') {
+                        timeout(time: 10, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: true
+                        }
+                    }
+                    stage('Test') {
+                        sh('mvn -s ${MAVEN_CONFIG} test')
+                        junit '**/target/surefire-reports/TEST-*.xml'
+                    }
+                    stage('Verify') {
+                        sh('mvn -s ${MAVEN_CONFIG} verify -DskipITs')
                     archiveArtifacts artifacts: '**/target/*.war', onlyIfSuccessful: true
-               }
+               }}
             }
         }
         stage('Container'){
