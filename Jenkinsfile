@@ -50,7 +50,11 @@ podTemplate(
         }
         stage('Container'){
             container('docker'){
+            withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'USERNAME',
+                                            passwordVariable: 'USERPASS')]){
                 sh('docker image build -t ice/jpetstore ./')
+                sh('docker login -u ${USERNAME} -p ${USERPASS} container.dhsice.name')
+                sh('docker image push ice/jpetstore')
             }
         }
     }
