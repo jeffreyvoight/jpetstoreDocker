@@ -17,7 +17,19 @@ podTemplate(
         volumes: [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ])
 {
     node(label) {
-        stage('Container'){
+        stage('Clone') {
+            container('maven'){
+                checkout(
+                    [
+                        $class                           : 'GitSCM',
+                        branches                         : scm.branches,
+                        doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
+                        extensions                       : scm.extensions,
+                        submoduleCfg                     : [],
+                        userRemoteConfigs                : scm.userRemoteConfigs
+                    ]
+                )
+            }
             container('docker'){
                 docker.withRegistry('https://container.dhsice.name', 'nexuslogin') {
                     sh('wget https://nexus.dhsice.name/repository/maven-snapshots/org/mybatis/jpetstore/6.0.3-SNAPSHOT/jpetstore-6.0.3-20200929.153558-1.war')
