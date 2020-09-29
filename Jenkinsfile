@@ -21,6 +21,8 @@ podTemplate(
             container('docker'){
                 docker.withRegistry('https://container.dhsice.name', 'nexuslogin') {
                     sh('wget https://nexus.dhsice.name/repository/maven-snapshots/org/mybatis/jpetstore/6.0.3-SNAPSHOT/jpetstore-6.0.3-20200929.153558-1.war')
+                    sh('ls -al')
+                    sh('pwd')
                     def customImage = docker.build("ice/jpetstore:${env.BUILD_ID}")
                     /* Push the container to the custom Registry */
                     customImage.push()
