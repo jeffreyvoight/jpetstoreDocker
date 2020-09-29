@@ -64,7 +64,7 @@ podTemplate(
                     echo('Building docker image');
                     sh('docker image build -t ice/jpetstore ./')
                     echo('Pushing docker image')
-                    sh('docker image push ice/jpetstore')
+                    sh('docker image push container.dhsice.name/ice/jpetstore')
                 }
             }
         }
