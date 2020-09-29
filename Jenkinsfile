@@ -6,7 +6,13 @@ podTemplate(
         containerTemplate(name: 'maven',
             image: 'maven:3.6.3-jdk-8',
             ttyEnabled: true,
-            command: 'cat')
+            command: 'cat'),
+        containerTemplate(name: 'docker',
+                    image: 'docker:latest',
+                    ttyEnabled: true,
+                    command: 'cat',
+                    envVars: [containerEnvVar(key: 'DOCKER_HOST', value: "unix:///var/run/docker.sock")],
+                    privileged: true)
         ]
 ) {
     node(label) {
