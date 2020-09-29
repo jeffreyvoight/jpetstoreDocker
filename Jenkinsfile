@@ -15,8 +15,7 @@ podTemplate(
                     privileged: true)
         ],
         volumes: [ hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock') ])
-
-) {
+{
     node(label) {
         stage('Container') {
             container('maven') {
