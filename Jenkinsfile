@@ -57,14 +57,17 @@ podTemplate(
         }
         stage('Container'){
             container('docker'){
-                withCredentials([usernamePassword(credentialsId: 'nexuslogin', usernameVariable: 'USERNAME',
-                                                passwordVariable: 'USERPASS')]){
-                    echo('Logging in to container.dhsice.name')
-                    sh('docker login -u ${USERNAME} -p ${USERPASS} container.dhsice.name')
-                    echo('Building docker image');
-                    sh('docker build -t ${USERNAME}/container.dhsice.name/ice/jpetstore:latest ./')
-                    echo('Pushing docker image')
-                    sh('docker push ${USERNAME}/container.dhsice.name/ice/jpetstore:latest')
+                docker.withRegistry('https://container.dhsice.name', 'nexuslogin') {
+                    def customImage = docker.build("ice/jpetstore:${env.BUILD_ID}")
+                    /* Push the container to the custom Registry */
+                    customImage.push()
+
+//                     echo('Logging in to container.dhsice.name')
+//                     sh('docker login -u ${USERNAME} -p ${USERPASS} container.dhsice.name')
+//                     echo('Building docker image');
+//                     sh('docker build -t container.dhsice.name/ice/jpetstore:latest')
+//                     echo('Pushing docker image')
+//                     sh('docker push container.dhsice.name/ice/jpetstore:latest')
                 }
             }
         }
